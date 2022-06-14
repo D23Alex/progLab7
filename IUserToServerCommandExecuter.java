@@ -65,5 +65,9 @@ public interface IUserToServerCommandExecuter {
 	
 	public void deleteAccount(String user);
 	
+	public void makeCollectionViewOnly();
+	
+	public void makeCollectionPublic();
+	
 	
 }

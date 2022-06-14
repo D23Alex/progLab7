@@ -253,9 +253,9 @@ public class UserClientCore implements IUserClientCore {
 						System.out.println(this.getStructureDescription() + " > Logging in > Failure | Incorrect login or password - try again");
 					}
 				} catch (IOException e) {
-					System.out.println(this.getStructureDescription() + " > Error | Server is currently anavailable - please tya again later");
+					System.out.println(this.getStructureDescription() + " > Error | Server is currently anavailable - please try again later");
 				} catch (NoServerResponseException e) {
-					System.out.println(this.getStructureDescription() + " > Error | Server is currently anavailable - please tya again later");
+					System.out.println(this.getStructureDescription() + " > Error | Server is currently anavailable - please try again later");
 				}
 			}
 			else if (commandAndArguments.get(0).toLowerCase().equals("logout")) {
@@ -285,10 +285,10 @@ public class UserClientCore implements IUserClientCore {
 						this.currentUserPassword = "default";
 					}
 				} catch (IOException e) {
-					System.out.println(this.getStructureDescription() + " > Error | Server is currently anavailable - please tya again later");
+					System.out.println(this.getStructureDescription() + " > Error | Server is currently anavailable - please try again later");
 					e.printStackTrace();
 				} catch (NoServerResponseException e) {
-					System.out.println(this.getStructureDescription() + " > Error | Server is currently anavailable - please tya again later");
+					System.out.println(this.getStructureDescription() + " > Error | Server is currently anavailable - please try again later");
 				}
 				
 			}
@@ -334,9 +334,9 @@ public class UserClientCore implements IUserClientCore {
 					this.currentUserName = "default";
 					this.currentUserPassword = "default";
 				} catch (IOException e) {
-					System.out.println(this.getStructureDescription() + " > Error | Server is currently anavailable - please tya again later");
+					System.out.println(this.getStructureDescription() + " > Error | Server is currently anavailable - please try again later");
 				} catch (NoServerResponseException e) {
-					System.out.println(this.getStructureDescription() + " > Error | Server is currently anavailable - please tya again later");
+					System.out.println(this.getStructureDescription() + " > Error | Server is currently anavailable - please try again later");
 				}
 				
 				
@@ -377,9 +377,53 @@ public class UserClientCore implements IUserClientCore {
 						System.out.println(this.getStructureDescription() + " > Registration > Failure | Your registration failed successfully. User with such name already exist, choose something different");
 					}
 				} catch (IOException e) {
-					System.out.println(this.getStructureDescription() + " > Error | Server is currently anavailable - please tya again later");
+					System.out.println(this.getStructureDescription() + " > Error | Server is currently anavailable - please try again later");
 				} catch (NoServerResponseException e) {
-					System.out.println(this.getStructureDescription() + " > Error | Server is currently anavailable - please tya again later");
+					System.out.println(this.getStructureDescription() + " > Error | Server is currently anavailable - please try again later");
+				}
+				
+			}
+			
+			else if (commandAndArguments.get(0).toLowerCase().equals("public")) {
+				ILogicServerRequest request = new LogicServerRequestMakePublic(currentCollectionName,
+						currentUserName, currentUserPassword);
+				try {
+					this.requestSenderModule.sendRequest(request);
+					IResponse response = this.receiverModule.receiveResponse();
+					
+					if (response.isRequestSuccessful()) {
+						System.out.println(this.getStructureDescription() + " > Success | You just made your collection editable by everyone");
+					}
+					else {
+						System.out.println(this.getStructureDescription() + " > Failure | Sorry, we couldn't access that collection");
+					}
+				} catch (IOException e) {
+					System.out.println(this.getStructureDescription() + " > Error | Server is currently anavailable - please try again later");
+					e.printStackTrace();
+				} catch (NoServerResponseException e) {
+					System.out.println(this.getStructureDescription() + " > Error | Server is currently anavailable - please try again later");
+				}
+				
+			}
+			
+			else if (commandAndArguments.get(0).toLowerCase().equals("viewonly")) {
+				ILogicServerRequest request = new LogicServerRequestMakeViewOnly(currentCollectionName,
+						currentUserName, currentUserPassword);
+				try {
+					this.requestSenderModule.sendRequest(request);
+					IResponse response = this.receiverModule.receiveResponse();
+					
+					if (response.isRequestSuccessful()) {
+						System.out.println(this.getStructureDescription() + " > Success | You just made your collection editable view-only");
+					}
+					else {
+						System.out.println(this.getStructureDescription() + " > Failure | Sorry, we couldn't access that collection");
+					}
+				} catch (IOException e) {
+					System.out.println(this.getStructureDescription() + " > Error | Server is currently anavailable - please try again later");
+					e.printStackTrace();
+				} catch (NoServerResponseException e) {
+					System.out.println(this.getStructureDescription() + " > Error | Server is currently anavailable - please try again later");
 				}
 				
 			}

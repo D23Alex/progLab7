@@ -36,4 +36,8 @@ public interface ILogicToDataServerCommandExecuter {
 	public void changePassword(String user, String newPassword) throws SQLException;
 	
 	public void deleteAccount(String name) throws SQLException;
+	
+	public void makeCollectionPublic(String collectionName, String userName) throws SQLException;
+	
+	public void makeCollectionViewOnly(String collectionName, String userName) throws SQLException;
 }

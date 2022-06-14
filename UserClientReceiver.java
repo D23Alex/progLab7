@@ -16,8 +16,8 @@ public class UserClientReceiver implements IUserClientReceiver {
 		IResponse toReturn = null;
 		
 		int stepCounter = 0;
-		//TODO: ÂÐÅÌÅÍÍÎ ÑÄÅËÀËÈ Î×ÅÍÜ ÒÅÐÏÅËÈÂÎÃÎ ÊËÈÅÍÒÀ
-		int stepLimit = 600;
+		// êëèåíò æä¸ò ýòî âðåìÿ, óìíîæåííîå íà 0,2 ñåêóíäû
+		int stepLimit = 30;
 		
 		while (true) {
 			if (stepCounter >= stepLimit) {
@@ -30,7 +30,7 @@ public class UserClientReceiver implements IUserClientReceiver {
 			} catch (Exception e) {
 				stepCounter++;
 				try {
-					TimeUnit.MILLISECONDS.sleep(500);
+					TimeUnit.MILLISECONDS.sleep(200);
 				} catch (InterruptedException e1) {
 					continue;
 				}
@@ -43,9 +43,9 @@ public class UserClientReceiver implements IUserClientReceiver {
 
 	@Override
 	public String getResponseStringDescription(String requestDescription, IResponse response) {
-		String ans = this.getStructureDescription() + " > " + requestDescription + " | Request ";
+		String ans = this.getStructureDescription() + " > " + requestDescription + " | Request on collection " + this.coreModule.getCurrentCollectionName();
 		if (response.isRequestSuccessful()) {
-			ans += "successful:";
+			ans += " successful:";
 			if (!response.getVehicles().isEmpty()) {
 				ans += "\nThe vehicles:";
 				for (Vehicle vehicle : response.getVehicles()) {
@@ -67,7 +67,7 @@ public class UserClientReceiver implements IUserClientReceiver {
 			}
 		}
 		else {
-			ans += "failed\n";
+			ans += " failed\n";
 			if (!response.getProblems().isEmpty()) {
 				ans += "Problems occured:";
 				for (String problem : response.getProblems()) {

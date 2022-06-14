@@ -12,8 +12,6 @@ import java.util.Map;
  */
 public class LogicServer extends Server implements ILogicServer {
 	
-	// TODO: сделать время ожидания ответа от сервера 10 сек
-	
 	
 	/**
 	 * Модуль приёма подкючений/запросов

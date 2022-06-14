@@ -17,7 +17,7 @@ public class LogicServerRequestCreateUser extends LogicServerRequest {
 
 	@Override
 	public void execute(IUserToServerCommandExecuter commandExecuter, IRequestResponser responser) {
-		commandExecuter.createUser(password, password);
+		commandExecuter.createUser(this.getUserName(), password);
 	}
 
 	public String getPassword() {

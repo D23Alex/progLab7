@@ -116,13 +116,6 @@ public class LogicServerCommandExecuter implements ILogicServerCommandExecuter, 
 	public void add(Vehicle vehicle) {
 		try {
 			
-			if (!this.databaseClientModule.userCanEditCollection(this.receiverModule.getCurrentRequest().getUserName(),
-					this.receiverModule.getCurrentRequest().getCollectionName())) {
-				this.responserModule.makeRequestUnsuccessful();
-				this.responserModule.addProblem("You are not allowed to add Vehicles to other users view-only collections");
-				return;
-			}
-			
 			this.databaseClientModule.add(vehicle, this.receiverModule.getCurrentRequest().getCollectionName());
 		} catch (SQLException e) {
 			this.responserModule.makeRequestUnsuccessful();
@@ -353,6 +346,43 @@ public class LogicServerCommandExecuter implements ILogicServerCommandExecuter, 
 
 	public void setResponserModule(IRequestResponser responserModule) {
 		this.responserModule = responserModule;
+	}
+
+	@Override
+	public void makeCollectionViewOnly() {
+		try {
+			
+			if (!this.databaseClientModule.userCanEditCollection(this.receiverModule.getCurrentRequest().getUserName(),
+					this.receiverModule.getCurrentRequest().getCollectionName())) {
+				this.responserModule.makeRequestUnsuccessful();
+				this.responserModule.addProblem("You are not allowed to change mode of other people's collections");
+				return;
+			}
+			
+			this.databaseClientModule.makeCollectionViewOnly(this.receiverModule.getCurrentRequest().getCollectionName(), this.receiverModule.getCurrentRequest().getUserName());
+		} catch (SQLException e) {
+			this.responserModule.makeRequestUnsuccessful();
+			this.responserModule.addProblem("Can't access that collection");
+		}
+	}
+
+	@Override
+	public void makeCollectionPublic() {
+		try {
+			
+			if (!this.databaseClientModule.userCanEditCollection(this.receiverModule.getCurrentRequest().getUserName(),
+					this.receiverModule.getCurrentRequest().getCollectionName())) {
+				this.responserModule.makeRequestUnsuccessful();
+				this.responserModule.addProblem("You are not allowed to change mode of other people's collections");
+				return;
+			}
+			
+			this.databaseClientModule.makeCollectionPublic(this.receiverModule.getCurrentRequest().getCollectionName(), this.receiverModule.getCurrentRequest().getUserName());
+		} catch (SQLException e) {
+			this.responserModule.makeRequestUnsuccessful();
+			this.responserModule.addProblem("Can't access that collection");
+		}
+		
 	}
 
 	

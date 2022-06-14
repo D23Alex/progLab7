@@ -23,9 +23,6 @@ import org.apache.commons.lang3.SerializationUtils;
  */
 public class LogicServerClient implements ILogicServerClient, ILogicToDataServerCommandExecuter {
 	
-	//TODO: убрать возвращение null из ВСЕХ методов здесь, где это есть. Потому что результаты эти потом исполльзуются.
-	// Методы здесь должны выбрасывать ошибки, НЕ ОБРАБАТЫВАТЬ И НЕ ПОРТИТЬ ЗАПРОС
-	
 	private Connection connectionToDB;
 	
 	private String salt;
@@ -304,6 +301,56 @@ public class LogicServerClient implements ILogicServerClient, ILogicToDataServer
 
 	public void setPepper(String pepper) {
 		this.pepper = pepper;
+	}
+
+
+	@Override
+	public synchronized void makeCollectionPublic(String collectionName, String userName) throws SQLException {
+		
+		// если эта коллекция не принадлежит пользователю - кидаем ексепшн
+		PreparedStatement preparedStatement = connectionToDB.prepareStatement("SELECT id FROM users WHERE name=?");
+		preparedStatement.setString(1, userName);
+		ResultSet resultSet = preparedStatement.executeQuery();
+		resultSet.next();
+		int id = resultSet.getInt("id");
+		
+		preparedStatement = connectionToDB.prepareStatement("SELECT author FROM collections WHERE name=?");
+		preparedStatement.setString(1, collectionName);
+		resultSet = preparedStatement.executeQuery();
+		resultSet.next();
+		if (resultSet.getInt("author") > id || resultSet.getInt("author") < 0) {
+			throw new SQLException();
+		}
+		
+		preparedStatement = connectionToDB.prepareStatement("UPDATE collections SET view_only=? WHERE name=?");
+		preparedStatement.setBoolean(1, false);
+		preparedStatement.setString(2, collectionName);
+		preparedStatement.executeUpdate();
+		
+	}
+
+
+	@Override
+	public synchronized void makeCollectionViewOnly(String collectionName, String userName) throws SQLException {
+		// если эта коллекция не принадлежит пользователю - кидаем ексепшн
+				PreparedStatement preparedStatement = connectionToDB.prepareStatement("SELECT id FROM users WHERE name=?");
+				preparedStatement.setString(1, userName);
+				ResultSet resultSet = preparedStatement.executeQuery();
+				resultSet.next();
+				int id = resultSet.getInt("id");
+				
+				preparedStatement = connectionToDB.prepareStatement("SELECT author FROM collections WHERE name=?");
+				preparedStatement.setString(1, collectionName);
+				resultSet = preparedStatement.executeQuery();
+				resultSet.next();
+				if (resultSet.getInt("author") != id) {
+					throw new SQLException();
+				}
+				
+				preparedStatement = connectionToDB.prepareStatement("UPDATE collections SET view_only=? WHERE name=?");
+				preparedStatement.setBoolean(1, true);
+				preparedStatement.setString(2, collectionName);
+				preparedStatement.executeUpdate();
 	}
 
 
